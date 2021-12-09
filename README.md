@@ -27,7 +27,6 @@ cd geometry
 pip install reqirements
 ```
 
-
 ## test
 ```bash
 python main.py

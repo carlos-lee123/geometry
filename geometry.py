@@ -60,6 +60,56 @@ def create_cylinder(cylinder_coefficients, height=5, step=0.5, vis=False):
     return npy
 
 
+
+def create_cylinder_vertical(cylinder_coefficients, height=5, step=0.5, vis=False):
+    """
+
+    Args:
+        cylinder_coefficients: A dictionary containing cylindrical coefficients:
+                                (r,x0,y0,z0
+                                r the radius of the cylinder
+                                x0,y0,z0 the Starting center of the cylinder)
+        height: height_ of the cylinder
+        step: Density of cylinder point cloud
+        vis: whether to visualize the cylinder
+
+    Returns:
+        numpy form of the cylinder point cloud: n x 3
+    References:
+        https://blog.csdn.net/inerterYang/article/details/111998278
+        https://blog.csdn.net/inerterYang/article/details/111304307
+
+    @Author: Carlos_Lee 202102
+
+    """
+    r = cylinder_coefficients['r']
+    x0 = cylinder_coefficients['x0']
+    y0 = cylinder_coefficients['y0']
+    z0 = cylinder_coefficients['z0']
+
+    angle_ = np.arange(0, 2 * np.pi, step / 10).reshape(-1, 1)
+
+    v = np.arange(0, height, step)
+    npy = []
+    for i in v:
+        x = x0 + r * np.cos(angle_)
+
+        y = y0 + r * np.sin(angle_)
+
+        z = z0 + np.full((angle_.shape[0],1), i)
+
+        npy.append(np.concatenate([x, y, z], axis=-1))
+
+    npy = np.concatenate(npy, axis=0)
+    if vis:
+        coordinate_ = o3d.geometry.TriangleMesh.create_coordinate_frame(size=height / 2., origin=[0.0, 0.0, 0.0])
+        pcd_ = o3d.geometry.PointCloud()
+        pcd_.points = o3d.utility.Vector3dVector(npy)
+        o3d.visualization.draw_geometries([coordinate_, pcd_], window_name="generate cylinder",
+                                          width=960, height=900, left=960, top=100)
+    return npy
+
+
 def create_line(line_coefficients, height=5, step=0.5, vis=False):
     """
 
